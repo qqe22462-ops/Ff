@@ -3,150 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surprise For You! ✨</title>
+    <title>PISIT HUB - OFFICIAL SCRIPT</title>
+    
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
     <style>
-        /* พื้นหลังแบบน่ารักไล่เฉดสี */
+        :root {
+            --bg-dark: #0b0f19;
+            --card-active: #1e2538;
+            --card-locked: #131824;
+            --neon-blue: #38bdf8;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
         body {
             margin: 0;
-            padding: 0;
+            padding: 30px 15px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            font-family: 'Kanit', sans-serif;
-            overflow: hidden;
         }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* ตู้คอนเทนเนอร์แบบใสๆ */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-align: center;
-            z-index: 10;
+        .header-profile {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 4px solid transparent;
+            background-image: linear-gradient(var(--bg-dark), var(--bg-dark)), 
+                              linear-gradient(to right, #ef4444, #f97316, #eab308, #22c55e, #38bdf8, #a855f7);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
 
         h1 {
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
 
-        /* ดีไซน์ปุ่มสวยๆ */
-        .btn-container {
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        /* กล่องครอบตัวหมุนกันบอท ให้มันดูสวยเข้ากับเว็บ */
+        .captcha-box {
+            margin-bottom: 30px;
+            background: #131824;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #2e374e;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            position: relative;
+        .script-card {
+            background-color: var(--card-active);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid #2e374e;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-main {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .card-img {
+            width: 75px;
+            height: 75px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             overflow: hidden;
         }
 
-        .btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: #45a049;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        .script-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
         }
 
-        .btn:active {
-            transform: scale(0.95);
+        .script-display {
+            background-color: #090d16;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #a7f3d0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid #1e293b;
         }
 
-        /* ฟองอากาศตกแต่ง */
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: rise 10s infinite ease-in;
+        .button-group {
+            display: flex;
+            gap: 12px;
         }
 
-        @keyframes rise {
-            0% { bottom: -100px; transform: translateX(0); }
-            50% { transform: translateX(100px); }
-            100% { bottom: 1080px; transform: translateX(-100px); }
+        .btn-copy {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        /* ข้อความแจ้งเตือน */
-        #toast {
-            visibility: hidden;
-            background-color: #fff;
-            color: #333;
-            text-align: center;
-            border-radius: 20px;
-            padding: 10px 20px;
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-copy:active {
+            transform: translateY(0);
+        }
+
+        .btn-mobile { background-color: var(--neon-red); }
+        .btn-pc { background-color: var(--neon-green); }
+
+        .script-card.locked {
+            background-color: var(--card-locked);
+            border: 1px dashed #222c3f;
+            box-shadow: none;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+        }
+
+        .locked-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .toast {
             position: fixed;
-            bottom: 50px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 100;
+            top: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid var(--neon-blue);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(-100px);
+            opacity: 0;
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
         }
-
-        #toast.show {
-            visibility: visible;
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-duration: 8s;"></div>
-    <div class="bubble" style="width: 80px; height: 80px; left: 20%; animation-duration: 12s;"></div>
-    <div class="bubble" style="width: 30px; height: 30px; left: 70%; animation-duration: 15s;"></div>
-    <div class="bubble" style="width: 60px; height: 60px; left: 80%; animation-duration: 10s;"></div>
+    <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/f8514fdfeafa8070957c7c3643a08bed~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=b86e5d62&x-expires=1780408800&x-signature=dQ%2Bv7kU7uSNJ3CEtxWoJXnvwVpk%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my2" alt="PisitHub Profile" class="header-profile">
 
-    <div class="glass-card">
-        <h1>✨ Copy Your Script ✨</h1>
-        <div class="btn-container">
-            <button class="btn" onclick="copyMe('PC')">💻 คัดลอกสำหรับ PC</button>
-            <button class="btn" style="background: #23a6d5;" onclick="copyMe('Mobile')">📱 คัดลอกสำหรับมือถือ</button>
-        </div>
+    <h1>PISIT HUB</h1>
+    <div class="subtitle">สคริปฟรีสำหรับ FC และผู้ติดตามของ ตาต้า🥰🥰</div>
+
+    <div class="captcha-box">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAADbTiv5CuDWxNZm8" data-theme="dark"></div>
     </div>
 
-    <div id="toast">คัดลอกสำเร็จแล้วจ้า! 💖</div>
+    <div class="container" id="hubContainer"></div>
+    <div class="toast" id="toastBox">คัดลอกสำเร็จ!</div>
 
     <script>
-        const myScript = `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=0707572550892"))("0707572550892")`;
+        const myScriptCode = `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=9910703379309"))("9910703379309")`;
+        const container = document.getElementById('hubContainer');
 
-        function copyMe(type) {
-            navigator.clipboard.writeText(myScript).then(() => {
-                const toast = document.getElementById("toast");
-                toast.innerText = "คัดลอก " + type + " สำเร็จ! ✨";
-                toast.className = "show";
-                setTimeout(() => { toast.className = ""; }, 2500);
-            });
+        function doCopy(device) {
+            // เช็คระบบว่าคนดูผ่านไอ้ตัวหมุนๆ ติ๊กถูกหรือยัง?
+            const turnstileResponse = turnstile.getResponse();
+            
+            if (!turnstileResponse) {
+                // ถ้ายังไม่ยอมกด หรือมีบอทสแปมเข้ามา จะคัดลอกสคริปต์ไม่ได้เด็ดขาด!
+                alert("❌ กรุณากดติ๊กถูกตรงกล่องตัวหมุนด้านบน เพื่อยืนยันว่ามึงไม่ใช่หุ่นยนต์ก่อนนะเพื่อน!");
+                return;
+            }
+
+            const textToCopy = myScriptCode;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showNotice(device);
+                }).catch(() => {
+                    fallbackCopy(textToCopy, device);
+                });
+            } else {
+                fallbackCopy(textToCopy, device);
+            }
+        }
+
+        function fallbackCopy(text, device) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                showNotice(device);
+            } catch (err) {
+                alert("ไม่สามารถคัดลอกได้โดยอัตโนมัติ กรุณาก๊อบปี้ข้อความในช่องเองนะครับเพื่อน");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showNotice(device) {
+            const toast = document.getElementById('toastBox');
+            toast.innerText = `📋 คัดลอกสคริปต์สำหรับ [${device}] เข้าคีย์บอร์ดแล้ว!`;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        // สร้างช่อง 1-20
+        for (let i = 1; i <= 20; i++) {
+            const card = document.createElement('div');
+            if (i === 1) {
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <div class="card-main">
+                        <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gJq9zOcOKjKobJiImbg5Tv4ccTWlQSfxGxUgUBIQF0tysWbUQC6dVliV&s=10" alt="Logo">
+                        <div class="card-info">
+                            <div class="script-title">สคริปต์ : ภารกิจสุดท้ายของอนิเมะ</div>
+                            <div class="script-display">${myScriptCode}</div>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-copy btn-mobile" onclick="doCopy('Android / มือถือ')">
+                            📱 คัดลอกสคริปต์บนมือถือ
+                        </button>
+                        <button class="btn-copy btn-pc" onclick="doCopy('PC / คอมพิวเตอร์')">
+                            💻 คัดลอกสคริปต์บน PC
+                        </button>
+                    </div>
+                `;
+            } else {
+                card.className = 'script-card locked';
+                card.innerHTML = `<div class="locked-text">⏳ ช่องที่ ${i} : กำลังอัปเดตสคริปต์ใหม่เร็วๆ นี้</div>`;
+            }
+            container.appendChild(card);
         }
     </script>
 </body>
 </html>
-

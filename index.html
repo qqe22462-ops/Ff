@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PISIT HUB - OFFICIAL SCRIPT</title>
-    
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <style>
         :root {
@@ -64,15 +62,6 @@
             font-size: 14px;
             margin-bottom: 25px;
             font-weight: bold;
-        }
-
-        /* กล่องครอบตัวหมุนกันบอท ให้มันดูสวยเข้ากับเว็บ */
-        .captcha-box {
-            margin-bottom: 30px;
-            background: #131824;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #2e374e;
         }
 
         .container {
@@ -218,28 +207,29 @@
     <h1>PISIT HUB</h1>
     <div class="subtitle">สคริปฟรีสำหรับ FC และผู้ติดตามของ ตาต้า🥰🥰</div>
 
-    <div class="captcha-box">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAADbTiv5CuDWxNZm8" data-theme="dark"></div>
-    </div>
-
     <div class="container" id="hubContainer"></div>
     <div class="toast" id="toastBox">คัดลอกสำเร็จ!</div>
 
     <script>
-        const myScriptCode = `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=9910703379309"))("9910703379309")`;
+        // ข้อมูลสคริปต์ของแต่ละช่อง (มัดรวมไว้เป็น Array จะได้อัปเดตง่ายๆ มึง)
+        const scriptsData = {
+            1: {
+                title: "สคริปต์ : ภารกิจสุดท้ายของอนิเมะ",
+                code: `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=9910703379309"))("9910703379309")`,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gJq9zOcOKjKobJiImbg5Tv4ccTWlQSfxGxUgUBIQF0tysWbUQC6dVliV&s=10"
+            },
+            2: {
+                title: "สคริป : สนามรบที่แข็งแกร่งที่สุด",
+                code: `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=2362384322951"))("2362384322951")`,
+                img: "https://static.wikia.nocookie.net/the-strongest-battlegrounds-rblx/images/1/19/Suiryuicon.webp/revision/latest/scale-to-width-down/1500?cb=20250531133606"
+            }
+        };
+
         const container = document.getElementById('hubContainer');
 
-        function doCopy(device) {
-            // เช็คระบบว่าคนดูผ่านไอ้ตัวหมุนๆ ติ๊กถูกหรือยัง?
-            const turnstileResponse = turnstile.getResponse();
+        function doCopy(scriptId, device) {
+            const textToCopy = scriptsData[scriptId].code;
             
-            if (!turnstileResponse) {
-                // ถ้ายังไม่ยอมกด หรือมีบอทสแปมเข้ามา จะคัดลอกสคริปต์ไม่ได้เด็ดขาด!
-                alert("❌ กรุณากดติ๊กถูกตรงกล่องตัวหมุนด้านบน เพื่อยืนยันว่ามึงไม่ใช่หุ่นยนต์ก่อนนะเพื่อน!");
-                return;
-            }
-
-            const textToCopy = myScriptCode;
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     showNotice(device);
@@ -277,29 +267,32 @@
             setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
-        // สร้างช่อง 1-20
+        // ลูปสร้างช่อง 1-20
         for (let i = 1; i <= 20; i++) {
             const card = document.createElement('div');
-            if (i === 1) {
+            
+            if (scriptsData[i]) {
+                // ช่องที่มีข้อมูลสคริปต์ (ช่อง 1 และช่อง 2)
                 card.className = 'script-card';
                 card.innerHTML = `
                     <div class="card-main">
-                        <img class="card-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gJq9zOcOKjKobJiImbg5Tv4ccTWlQSfxGxUgUBIQF0tysWbUQC6dVliV&s=10" alt="Logo">
+                        <img class="card-img" src="${scriptsData[i].img}" alt="Logo">
                         <div class="card-info">
-                            <div class="script-title">สคริปต์ : ภารกิจสุดท้ายของอนิเมะ</div>
-                            <div class="script-display">${myScriptCode}</div>
+                            <div class="script-title">${scriptsData[i].title}</div>
+                            <div class="script-display">${scriptsData[i].code}</div>
                         </div>
                     </div>
                     <div class="button-group">
-                        <button class="btn-copy btn-mobile" onclick="doCopy('Android / มือถือ')">
+                        <button class="btn-copy btn-mobile" onclick="doCopy(${i}, 'Android / มือถือ')">
                             📱 คัดลอกสคริปต์บนมือถือ
                         </button>
-                        <button class="btn-copy btn-pc" onclick="doCopy('PC / คอมพิวเตอร์')">
+                        <button class="btn-copy btn-pc" onclick="doCopy(${i}, 'PC / คอมพิวเตอร์')">
                             💻 คัดลอกสคริปต์บน PC
                         </button>
                     </div>
                 `;
             } else {
+                // ช่องที่เหลือที่ยังไม่ได้อัปเดตข้อมูล
                 card.className = 'script-card locked';
                 card.innerHTML = `<div class="locked-text">⏳ ช่องที่ ${i} : กำลังอัปเดตสคริปต์ใหม่เร็วๆ นี้</div>`;
             }
@@ -308,3 +301,4 @@
     </script>
 </body>
 </html>
+

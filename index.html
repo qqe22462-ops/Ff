@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PISIT HUB - OFFICIAL SCRIPT</title>
 
     <style>
@@ -13,8 +13,17 @@
             --neon-blue: #38bdf8;
             --neon-green: #10b981;
             --neon-red: #ef4444;
+            --neon-discord: #5865F2; /* สีม่วงดิสคอร์ด */
             --text-main: #f8fafc;
             --text-muted: #64748b;
+        }
+
+        /* ป้องกันการคลุมดำเวลากดปุ่มรัวๆ บนจอมือถือ */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         * {
@@ -99,6 +108,21 @@
             flex-shrink: 0;
         }
 
+        /* ตกแต่งพิเศษสำหรับภาพแนวนอนของ Discord ในช่อง 3 */
+        .card-img-horizontal {
+            width: 100%;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--neon-discord);
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            cursor: pointer;
+        }
+        .card-img-horizontal:hover {
+            transform: scale(1.01);
+            filter: brightness(1.1);
+        }
+
         .card-info {
             flex: 1;
             display: flex;
@@ -145,6 +169,7 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-decoration: none; /* ลบเส้นใต้ลิงก์ */
         }
 
         .btn-copy:hover {
@@ -158,6 +183,7 @@
 
         .btn-mobile { background-color: var(--neon-red); }
         .btn-pc { background-color: var(--neon-green); }
+        .btn-discord { background-color: var(--neon-discord); }
 
         .script-card.locked {
             background-color: var(--card-locked);
@@ -211,17 +237,28 @@
     <div class="toast" id="toastBox">คัดลอกสำเร็จ!</div>
 
     <script>
-        // ข้อมูลสคริปต์ของแต่ละช่อง (มัดรวมไว้เป็น Array จะได้อัปเดตง่ายๆ มึง)
+        // ลิงก์ดิสคอร์ดของมึง
+        const discordLink = "https://discord.com/channels/1377989516916428910/1399393229602033694";
+
+        // ข้อมูลสคริปต์ของแต่ละช่อง
         const scriptsData = {
             1: {
+                type: "script",
                 title: "สคริปต์ : ภารกิจสุดท้ายของอนิเมะ",
                 code: `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=9910703379309"))("9910703379309")`,
                 img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gJq9zOcOKjKobJiImbg5Tv4ccTWlQSfxGxUgUBIQF0tysWbUQC6dVliV&s=10"
             },
             2: {
+                type: "script",
                 title: "สคริป : สนามรบที่แข็งแกร่งที่สุด",
                 code: `loadstring(game:HttpGet("https://encrypt-x.pages.dev/Scripts?Id=2362384322951"))("2362384322951")`,
                 img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfsaV8E9WWp9bk76hQYVs869CP2F5LXJ6n35WnPJH4nk_NdIwy14uMyX_v&s=10"
+            },
+            3: {
+                type: "discord",
+                title: "📢 เข้าร่วมชุมชน DISCORD ของพวกเรา",
+                code: discordLink,
+                img: "https://dit.rsu.ac.th/wp-content/uploads/2024/11/discord-logo.png"
             }
         };
 
@@ -272,27 +309,44 @@
             const card = document.createElement('div');
             
             if (scriptsData[i]) {
-                // ช่องที่มีข้อมูลสคริปต์ (ช่อง 1 และช่อง 2)
-                card.className = 'script-card';
-                card.innerHTML = `
-                    <div class="card-main">
-                        <img class="card-img" src="${scriptsData[i].img}" alt="Logo">
-                        <div class="card-info">
-                            <div class="script-title">${scriptsData[i].title}</div>
-                            <div class="script-display">${scriptsData[i].code}</div>
+                if (scriptsData[i].type === "script") {
+                    // ช่องแบบสคริปต์ปกติ (ช่อง 1, 2)
+                    card.className = 'script-card';
+                    card.innerHTML = `
+                        <div class="card-main">
+                            <img class="card-img" src="${scriptsData[i].img}" alt="Logo">
+                            <div class="card-info">
+                                <div class="script-title">${scriptsData[i].title}</div>
+                                <div class="script-display">${scriptsData[i].code}</div>
                         </div>
-                    </div>
-                    <div class="button-group">
-                        <button class="btn-copy btn-mobile" onclick="doCopy(${i}, 'Android / มือถือ')">
-                            📱 คัดลอกสคริปต์บนมือถือ
-                        </button>
-                        <button class="btn-copy btn-pc" onclick="doCopy(${i}, 'PC / คอมพิวเตอร์')">
-                            💻 คัดลอกสคริปต์บน PC
-                        </button>
-                    </div>
-                `;
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-copy btn-mobile" onclick="doCopy(${i}, 'Android / มือถือ')">
+                                📱 คัดลอกสคริปต์บนมือถือ
+                            </button>
+                            <button class="btn-copy btn-pc" onclick="doCopy(${i}, 'PC / คอมพิวเตอร์')">
+                                💻 คัดลอกสคริปต์บน PC
+                            </button>
+                        </div>
+                    `;
+                } else if (scriptsData[i].type === "discord") {
+                    // ช่องแบบพิเศษ Discord แนวนอน (ช่อง 3)
+                    card.className = 'script-card';
+                    card.innerHTML = `
+                        <div class="script-title" style="text-align: center; margin-bottom: -5px;">${scriptsData[i].title}</div>
+                        <img class="card-img-horizontal" src="${scriptsData[i].img}" alt="Discord Banner" onclick="window.open('${scriptsData[i].code}', '_blank')">
+                        <div class="button-group">
+                            <a class="btn-copy btn-discord" href="${scriptsData[i].code}" target="_blank">
+                                📱 เปิดบนมือถือ / App
+                            </a>
+                            <a class="btn-copy btn-discord" href="${scriptsData[i].code}" target="_blank">
+                                💻 เปิดบน PC / Web
+                            </a>
+                        </div>
+                    `;
+                }
             } else {
-                // ช่องที่เหลือที่ยังไม่ได้อัปเดตข้อมูล
+                // ช่องที่เหลือที่ยังล็อกอยู่ (ช่อง 4-20)
                 card.className = 'script-card locked';
                 card.innerHTML = `<div class="locked-text">⏳ ช่องที่ ${i} : กำลังอัปเดตสคริปต์ใหม่เร็วๆ นี้</div>`;
             }
@@ -301,3 +355,4 @@
     </script>
 </body>
 </html>
+
